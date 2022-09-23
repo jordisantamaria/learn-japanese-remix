@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import Nav from "~/components/Nav";
@@ -17,7 +17,7 @@ export const loader = async () => {
 };
 
 
-export default function Index() {
+export default function Counterpicks() {
   const user = useOptionalUser();
   const { champSelect } = useLoaderData() as LoaderData;
   return (
@@ -26,16 +26,17 @@ export default function Index() {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           {champSelect.myTeam.map((champ) => (
-            <Box sx={{p: 1.5}}>{champ.name}</Box>
+            <div>{champ.name}</div>
           ))}
         </Grid>
         <Grid item xs={6}>
           {champSelect.enemyTeam.map((champ) => (
-            <Box sx={{p: 1.5}}>{champ.name}</Box>
+            <div>{champ.name}</div>
           ))}
         </Grid>
       </Grid>
     </Container>
   );
 }
+
 

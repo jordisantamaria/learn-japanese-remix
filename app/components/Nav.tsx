@@ -106,7 +106,7 @@ const Nav = () => {
             href=""
             sx={{
               mr: 2,
-              display: { xs: "flex", md: "none" },
+                display: { xs: "flex", md: "none" },
               flexGrow: 1,
               fontFamily: "monospace",
               fontWeight: 700,
@@ -124,7 +124,7 @@ const Nav = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                <Link to={"notes"} className="text-blue-600 underline">
+                <Link to={"/counterpicks"}>
                   {page}
                 </Link>
               </Button>

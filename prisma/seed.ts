@@ -17,7 +17,7 @@ async function seed() {
 
   const hashedPassword = await bcrypt.hash("racheliscool", 10);
 
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email,
       password: {
@@ -28,53 +28,41 @@ async function seed() {
     },
   });
 
-  await prisma.note.create({
-    data: {
-      title: "My first note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
-
-  await prisma.note.create({
-    data: {
-      title: "My second note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
-
-  const vocabLists = [
-    {
-      name: "Saludaciones",
-    },
-    {
-      name: "Sample list",
-    },
-    {
-      name: "Sample list 2",
-    },
-    {
-      name: "Sample list 3",
-    },
-  ];
-
-  vocabLists.forEach(async (list) => {
-    await prisma.vocabList.create({
-      data: list
-    })
-  })
-
-  await prisma.vocabItems.create({
-    data: 
+  const vocabList = {
+    name: "Saludaciones",
+    vocabItems: [
       {
-        word: 'こんにちは',
-        translation: 'Hola',
-        pronunciation: 'konnichiha',
-        association: ''
+        word: "こんにちは",
+        translation: "Hola",
+        pronunciation: "konnichiha",
       },
+      {
+        word: "おはよう",
+        translation: "Buenos dia",
+        pronunciation: "ohayou",
+      },
+      {
+        word: "こんばんわ",
+        translation: "Buenas tardes",
+        pronunciation: "konbanwa",
+      },
+      {
+        word: "おやすみなさい",
+        translation: "Buenas noches",
+        pronunciation: "oyasuminasai",
+      },
+    ],
+  };
 
-  })
+  const vocabListCreated = await prisma.vocabList.create({
+    data: { name: vocabList.name },
+  });
+
+  vocabList.vocabItems.map(async (item) => {
+    await prisma.vocabItem.create({
+      data: { ...item, vocabListId: vocabListCreated.id },
+    });
+  });
 
   console.log(`Database has been seeded. 🌱`);
 }

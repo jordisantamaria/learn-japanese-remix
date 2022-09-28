@@ -4,17 +4,14 @@ import { Form, useActionData, useLoaderData, useTransition } from "@remix-run/re
 import invariant from "tiny-invariant";
 
 import Nav from "~/components/Nav";
-import { getVocabList } from "~/models/vocabList.server";
-import { createVocabList, updateVocabList } from "~/models/vocabLists.server";
+import { getVocabList, updateVocabList } from "~/models/vocabLists.server";
+import { requireUser } from "~/session.server";
 
-type LoaderData = {
-  vocabList: Awaited<ReturnType<typeof getVocabList>>;
-};
 
 export const loader = async ({params}: any) => {
   const vocabList = await getVocabList(params.uid)
   invariant(vocabList, `Vocablist is not found for uid = ${params.uid}` )
-  return json<LoaderData>({
+  return json({
     vocabList,
   });
 };
@@ -26,7 +23,7 @@ type ActionData =
   | undefined;
 
 export const action: ActionFunction = async ({ request, params }) => {
-  // await requireUser(request)
+  await requireUser(request)
   const formData = await request.formData();
   const name = formData.get("name");
 
@@ -47,7 +44,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function New() {
-  const { vocabList } = useLoaderData() as LoaderData;
+  const { vocabList } = useLoaderData<typeof loader>();
   const errors = useActionData() as ActionData;
 
   const transition = useTransition();

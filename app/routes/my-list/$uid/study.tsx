@@ -9,23 +9,23 @@ import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import Nav from "~/components/Nav";
-import { getVocabList } from "~/models/vocabList.server";
-import { useOptionalUser } from "~/utils";
+import { getVocabList } from "~/models/vocabLists.server";
 
-type LoaderData = {
-  vocabList: Awaited<ReturnType<typeof getVocabList>>;
-};
 
-export const loader = async ({params}: any) => {
-  const vocabList = await getVocabList(params.uid)
-  invariant(vocabList, `Vocablist is not found for uid = ${params.uid}` )
-  return json<LoaderData>({
+export const loader = async ({ params }: any) => {
+  const vocabList = await getVocabList(params.uid);
+  invariant(vocabList, `Vocablist is not found for uid = ${params.uid}`);
+  if (!vocabList) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  return json({
     vocabList,
   });
 };
 
 export default function MyList() {
-  const { vocabList } = useLoaderData() as LoaderData;
+  const { vocabList } = useLoaderData<typeof loader>();
   return (
     <Container>
       <Nav />
@@ -39,14 +39,11 @@ export default function MyList() {
       >
         {vocabList.vocabItems.map((item) => (
           <ListItemButton key={item.id} sx={{ background: "yellow" }}>
-            <Link to='/myList'>
-            <ListItemText primary={item.word} />
-            </Link>
+              <ListItemText primary={item.word} />
           </ListItemButton>
         ))}
       </List>
     </Container>
   );
 }
-
 

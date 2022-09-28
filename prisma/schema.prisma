@@ -15,7 +15,6 @@ model User {
   updatedAt DateTime @updatedAt
 
   password Password?
-  notes    Note[]
 }
 
 model Password {
@@ -25,32 +24,24 @@ model Password {
   userId String @unique
 }
 
-model Note {
-  id    String @id @default(cuid())
-  title String
-  body  String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
-}
 
 model VocabList {
   id   String @id @default(cuid())
   name String
+  vocabItems    VocabItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model VocabItems {
+model VocabItem {
   id            String @id @default(cuid())
   word          String
   translation   String
   pronunciation String
-  association   String
+  association   String?
+  vocabList     VocabList   @relation(fields: [vocabListId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  vocabListId   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

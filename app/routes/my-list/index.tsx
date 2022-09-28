@@ -18,14 +18,14 @@ type LoaderData = {
 
 export const loader = async ({ request }: any) => {
   // redirect to login screen if not logged
-  // await requireUser(request)
+  await requireUser(request)
   return json<LoaderData>({
     vocabLists: await getVocabLists(),
   });
 };
 
 export default function Index() {
-  const { vocabLists } = useLoaderData() as LoaderData;
+  const { vocabLists } = useLoaderData<typeof loader>();
 
   const handleDelete = () => {
 

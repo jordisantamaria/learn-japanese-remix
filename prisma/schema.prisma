@@ -36,3 +36,23 @@ model Note {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 }
+
+model VocabList {
+  id   String @id @default(cuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VocabItems {
+  id            String @id @default(cuid())
+  word          String
+  translation   String
+  pronunciation String
+  association   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

@@ -1,42 +1,40 @@
-import { Container, Grid } from "@mui/material";
+import {
+  Container,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import Nav from "~/components/Nav";
-import { getChampSelect } from "~/models/champSelect.server";
+import { getVocabLists } from "~/models/vocabLists.server";
 import { useOptionalUser } from "~/utils";
 
-
 type LoaderData = {
-  champSelect: Awaited<ReturnType<typeof getChampSelect>>;
+  vocabLists: Awaited<ReturnType<typeof getVocabLists>>;
 };
 
 export const loader = async () => {
   return json<LoaderData>({
-    champSelect: await getChampSelect(),
+    vocabLists: await getVocabLists(),
   });
 };
 
-
-export default function Counterpicks() {
+export default function Index() {
   const user = useOptionalUser();
-  const { champSelect } = useLoaderData() as LoaderData;
+  const { vocabLists } = useLoaderData() as LoaderData;
   return (
     <Container>
       <Nav />
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          {champSelect.myTeam.map((champ) => (
-            <div>{champ.name}</div>
-          ))}
-        </Grid>
-        <Grid item xs={6}>
-          {champSelect.enemyTeam.map((champ) => (
-            <div>{champ.name}</div>
-          ))}
-        </Grid>
-      </Grid>
+      <List>
+        {vocabLists.map((list) => (
+          <ListItemButton>
+            <ListItemText primary={list.name} />
+          </ListItemButton>
+        ))}
+      </List>
     </Container>
   );
 }
-
 

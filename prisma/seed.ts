@@ -11,6 +11,10 @@ async function seed() {
     // no worries if it doesn't exist yet
   });
 
+  await prisma.vocabList.deleteMany().catch(() => {
+    // no worries if it doesn't exist yet
+  });
+
   const hashedPassword = await bcrypt.hash("racheliscool", 10);
 
   const user = await prisma.user.create({
@@ -40,6 +44,38 @@ async function seed() {
     },
   });
 
+  const vocabLists = [
+    {
+      name: "Saludaciones",
+    },
+    {
+      name: "Sample list",
+    },
+    {
+      name: "Sample list 2",
+    },
+    {
+      name: "Sample list 3",
+    },
+  ];
+
+  vocabLists.forEach(async (list) => {
+    await prisma.vocabList.create({
+      data: list
+    })
+  })
+
+  await prisma.vocabItems.create({
+    data: 
+      {
+        word: 'こんにちは',
+        translation: 'Hola',
+        pronunciation: 'konnichiha',
+        association: ''
+      },
+
+  })
+
   console.log(`Database has been seeded. 🌱`);
 }
 
@@ -51,3 +87,4 @@ seed()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

@@ -41,24 +41,9 @@ const Nav = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            LOGO
-          </Typography>
+          <Link to={"/my-list"}>
+              <Typography textAlign="center" css={css`margin-right: 32px`}>LOGO</Typography>
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -91,9 +76,14 @@ const Nav = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Link to={"notes"} css={css`color: white`}>
+                  <Link
+                    to={"notes"}
+                    css={css`
+                      color: white;
+                    `}
+                  >
                     <Typography textAlign="center">{page}</Typography>
-                    </Link>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -106,7 +96,7 @@ const Nav = () => {
             href=""
             sx={{
               mr: 2,
-                display: { xs: "flex", md: "none" },
+              display: { xs: "flex", md: "none" },
               flexGrow: 1,
               fontFamily: "monospace",
               fontWeight: 700,
@@ -124,9 +114,7 @@ const Nav = () => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                <Link to={"/counterpicks"}>
-                  {page}
-                </Link>
+                <Link to={"/counterpicks"}>{page}</Link>
               </Button>
             ))}
           </Box>

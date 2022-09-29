@@ -6,7 +6,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import Nav from "~/components/Nav";
 import { getVocabList } from "~/models/vocabLists.server";
@@ -15,9 +15,6 @@ import { getVocabList } from "~/models/vocabLists.server";
 export const loader = async ({ params }: any) => {
   const vocabList = await getVocabList(params.uid);
   invariant(vocabList, `Vocablist is not found for uid = ${params.uid}`);
-  if (!vocabList) {
-    throw new Response("Not Found", { status: 404 });
-  }
 
   return json({
     vocabList,

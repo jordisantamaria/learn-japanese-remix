@@ -1,16 +1,17 @@
 import {
+  Box,
   Button,
   Container,
   css,
   List,
-  ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { ActionFunction, json } from "@remix-run/node";
+import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 import Nav from "~/components/Nav";
-import { getVocabLists } from "~/models/vocabLists.server";
+import { deleteVocabList, getVocabLists } from "~/models/vocabLists.server";
 import { requireUser } from "~/session.server";
+import invariant from "tiny-invariant";
 
 type LoaderData = {
   vocabLists: Awaited<ReturnType<typeof getVocabLists>>;
@@ -18,18 +19,30 @@ type LoaderData = {
 
 export const loader = async ({ request }: any) => {
   // redirect to login screen if not logged
-  await requireUser(request)
+  await requireUser(request);
   return json<LoaderData>({
     vocabLists: await getVocabLists(),
   });
 };
 
+export const action: ActionFunction = async ({ params, request }) => {
+  const formData = await request.formData();
+  const id = formData.get("id") as string;
+  invariant(id, "id is required");
+
+  return await deleteVocabList(id);
+};
+
 export default function Index() {
   const { vocabLists } = useLoaderData<typeof loader>();
+  const submit = useSubmit();
 
-  const handleDelete = () => {
 
-  }
+  const handleDelete = (listId: string) => {
+    const formData = new FormData();
+    formData.append('id', listId);
+    submit(formData, {method: "delete"})
+  };
 
   return (
     <Container>
@@ -43,19 +56,40 @@ export default function Index() {
       >
         {vocabLists.map((list) => (
           <>
-            <Link
-              prefetch="intent"
-              key={list.id}
-              to={`/my-list/${list.id}/study`}
+            <Box
+              sx={{
+                background: "red",
+                justifyContent: "space-between",
+                display: "flex",
+                padding: "8px",
+                alignItems: "center",
+                color: "white",
+              }}
             >
-              <ListItemButton sx={{ background: "red" }}>
+              <Link
+                prefetch="intent"
+                key={list.id}
+                to={`/my-list/${list.id}/study`}
+                css={css`
+                  width: 100%;
+                `}
+              >
                 <ListItemText primary={list.name} />
-              </ListItemButton>
-            </Link>
-            <Link to={`/my-list/${list.id}/edit`}>
-              <Button variant="contained">Edit</Button>
-            </Link>
-              <Button variant="contained" onClick={handleDelete}>Delete</Button>
+              </Link>
+              <div
+                css={css`
+                  display: flex;
+                  gap: 8px;
+                `}
+              >
+                <Link to={`/my-list/${list.id}/edit`}>
+                  <Button variant="contained">Edit</Button>
+                </Link>
+                  <Button variant="contained" onClick={() => handleDelete(list.id)}>
+                    Delete
+                  </Button>
+              </div>
+            </Box>
           </>
         ))}
       </List>

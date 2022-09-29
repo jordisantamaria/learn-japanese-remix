@@ -25,13 +25,10 @@ export async function updateVocabList(
   return prisma.vocabList.update({ data: vocabList, where: { id } });
 }
 
-// export function deleteNote({
-//   id,
-//   userId,
-// }: Pick<Note, "id"> & { userId: User["id"] }) {
-//   return prisma.note.deleteMany({
-//     where: { id, userId },
-//   });
-// }
-//
+export function deleteVocabList(id: string) {
+  return prisma.vocabList.delete({
+    where: { id },
+  });
+}
+
 
